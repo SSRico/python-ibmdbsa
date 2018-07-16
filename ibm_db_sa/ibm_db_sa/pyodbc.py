@@ -21,7 +21,8 @@ import urllib
 from sqlalchemy.connectors.pyodbc import PyODBCConnector
 from .base import _SelectLastRowIDMixin, DB2ExecutionContext, DB2Dialect
 from . import reflection as ibm_reflection
-
+# Python 2 and Python 3 Compatibility
+from future.utils import iteritems
 
 class DB2ExecutionContext_pyodbc(_SelectLastRowIDMixin, DB2ExecutionContext):
     pass
@@ -84,12 +85,15 @@ class DB2Dialect_pyodbc(PyODBCConnector, DB2Dialect):
                                         keys.pop("odbc_autotranslate"))
 
             connectors.extend(['%s=%s' % (k, v)
-                                    for k, v in keys.iteritems()])
+                                    # Python 2 and Python 3 Compatibility
+                                    # for k, v in keys.iteritems()])
+                                    for k, v in iteritems(keys)])
         return [[";".join(connectors)], connect_args]
 
 class AS400Dialect_pyodbc(PyODBCConnector, DB2Dialect):
 
-    supports_unicode_statements = False
+    # supports_unicode_statements = False
+    supports_unicode_statements = True
     supports_sane_rowcount = False
     supports_sane_multi_rowcount = False
     supports_native_decimal = True
@@ -143,8 +147,10 @@ class AS400Dialect_pyodbc(PyODBCConnector, DB2Dialect):
           # database from a latin1 client...
           if 'odbc_autotranslate' in keys:
               connectors.append("AutoTranslate=%s" % keys.pop("odbc_autotranslate"))
+          # Python 2 and Python 3 Compatibility
+          # connectors.extend(['%s=%s' % (k,v) for k,v in keys.iteritems()])
+          connectors.extend(['%s=%s' % (k,v) for k,v in iteritems(keys)])
 
-          connectors.extend(['%s=%s' % (k,v) for k,v in keys.iteritems()])
         return [[";".join (connectors)], connect_args]
 
 

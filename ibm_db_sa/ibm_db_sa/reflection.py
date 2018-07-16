@@ -23,6 +23,8 @@ from sqlalchemy import Table, MetaData, Column
 from sqlalchemy.engine import reflection
 import re
 import codecs
+# Python 2 and Python 3 Compatibility
+from future.utils import iteritems
 
 
 class CoerceUnicode(sa_types.TypeDecorator):
@@ -364,7 +366,9 @@ class DB2Reflector(BaseReflector):
             else:
                 fschema[r[0]]['constrained_columns'].append(self.normalize_name(r[3]))
                 fschema[r[0]]['referred_columns'].append(self.normalize_name(r[7]))
-        return [value for key, value in fschema.iteritems()]
+        # Python 2 and Python 3 Compatibility
+        # return [value for key, value in fschema.iteritems()]
+        return [value for key, value in iteritems(fschema)]
 
 
     @reflection.cache
@@ -677,7 +681,9 @@ class AS400Reflector(BaseReflector):
             else:
                 fschema[r[0]]['constrained_columns'].append(self.normalize_name(r[3]))
                 fschema[r[0]]['referred_columns'].append(self.normalize_name(r[7]))
-        return [value for key, value in fschema.iteritems()]
+        # Python 2 and Python 3 Compatibility
+        # return [value for key, value in fschema.iteritems()]
+        return [value for key, value in iteritems(fschema)]
 
     # Retrieves a list of index names for a given schema
     @reflection.cache
@@ -707,4 +713,6 @@ class AS400Reflector(BaseReflector):
                                 'column_names': [self.normalize_name(r[2])],
                                 'unique': r[1] == 'Y'
                         }
-        return [value for key, value in indexes.iteritems()]
+        # Python 2 and Python 3 Compatibility
+        # return [value for key, value in indexes.iteritems()]
+        return [value for key, value in iteritems(indexes)]
